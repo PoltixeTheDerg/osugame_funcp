@@ -4,10 +4,14 @@
 // @author      /u/N3G4
 // @description Adds osu! related functionality to /r/osugame
 // @include     *reddit.com/r/osugame*
-// @version     1.3.3
+// @version     1.3.4
 // @run-at      document-end
-// @grant       GM_xmlhttpRequest
+// @grant       GM_openInTab
 // @grant       GM_addStyle
+// @grant       GM_registerMenuCommand
+// @grant       GM_getValue
+// @grant       GM_setValue
+// @grant       GM_xmlhttpRequest
 // ==/UserScript==
 
 // ~ ~~ Features ~~ ~
@@ -16,6 +20,36 @@
 // * Adds live twitch streams to the sidebar
 //
 // ~      ~~~~      ~
+
+var githubURL = "https://github.com/v0x76/osugame_funcp";
+
+var g_streams = GM_getValue("streams", true);
+var g_flairs = GM_getValue("flairs", true);
+var g_debug = GM_getValue("debug", false);
+
+function setupGMMenu() {
+    var setStreams = function() {
+        g_streams = !g_streams; 
+        GM_setValue("streams", g_streams);
+    };
+
+    var setFlairs = function() {
+        g_flairs = !g_flairs; 
+        GM_setValue("flairs", g_flairs);
+    };
+
+    var setDebug = function() {
+        g_debug = !g_debug; 
+        GM_setValue("debug", g_debug);
+    };
+
+    GM_registerMenuCommand("Toggle flair hover info", setFlairs, "f");
+    GM_registerMenuCommand("Toggle streams", setStreams, "s");
+    GM_registerMenuCommand("Toggle debug mode", setDebug, "d");
+    GM_registerMenuCommand("Open github repo", function(){ GM_openInTab(githubURL); }, "g");
+    GM_registerMenuCommand("DL latest version of script", 
+        function(){ GM_openInTab(githubURL + "/raw/master/osugame_func+.user.js"); }, "v");
+}
 
 function makeStylesheet() {
     GM_addStyle(
@@ -153,7 +187,7 @@ function Flairbox() {
     createInfoBox();
 
     var allflairs = document.getElementsByClassName("flair");
-    //console.log("Found " + allflairs.length + " flairs.");
+    if(g_debug) console.log("Found " + allflairs.length + " flairs.");
 
     var flairs = [];
     for(let i=allflairs.length-1; i>0; i--) {
@@ -161,10 +195,10 @@ function Flairbox() {
 
         // select only flairs with valid URLs
         if( flairtext.search("^https?://") !== -1 ) {
-            //console.log("Found URL: " + flairtext);
+            if(g_debug) console.log("Found URL: " + flairtext);
             flairs.push(allflairs[i]);
             clickify(allflairs[i]);
-            if( flairtext.search("^https?://osu\.ppy\.sh/u/") !== -1 ) {
+            if( g_flairs && flairtext.search("^https?://osu\.ppy\.sh/u/") !== -1 ) {
                 setHover(allflairs[i]);
             }
         }
@@ -236,8 +270,13 @@ function Streambox() {
 }
 
 window.addEventListener("load", function(){
+    setupGMMenu();
     makeStylesheet();
-    Streambox();
+
+    if(g_streams) {
+        Streambox();
+    }
+
     Flairbox();
 }, false );
 
