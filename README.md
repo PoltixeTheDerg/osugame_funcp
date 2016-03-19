@@ -12,7 +12,7 @@ Userscript adding osu! related functionality to /r/osugame
 ## Installation
 1. You will need a userscript manager add-on for your browser such as Greasemonkey/Scriptish for Firefox, or Tampermonkey for Chrome/Chromium.
 2. To install this script, [click here](https://github.com/v0x76/osugame_funcp/raw/master/osugame_func%2B.user.js) or open the raw data of the script.
-3. Done! For future downloads, the same link can be opened from the User Script Commands menu, within the menu of your userscript add-on (click on the icon).
+3. Done! For updates, the same link can be opened from the User Script Commands menu, within the menu of your userscript add-on (click on the icon).
 
 ## Other info
 You can toggle features in the User Script Commands menu of your userscript manager add-on. Here you can also download the latest version of the script.
