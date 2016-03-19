@@ -4,7 +4,7 @@
 // @author      /u/N3G4
 // @description Adds osu! related functionality to /r/osugame
 // @include     *reddit.com/r/osugame*
-// @version     1.4.0
+// @version     1.4.1
 // @require     https://openuserjs.org/src/libs/sizzle/GM_config.js
 // @run-at      document-end
 // @grant       GM_openInTab
@@ -12,8 +12,8 @@
 // @grant       GM_registerMenuCommand
 // @grant       GM_getValue
 // @grant       GM_setValue
-// @grant       GM_xmlhttpRequest
 // @grant       GM_log
+// @grant       GM_xmlhttpRequest
 // ==/UserScript==
 
 // ~ ~~ Features ~~ ~
@@ -25,7 +25,7 @@
 
 var githubURL = "https://github.com/v0x76/osugame_funcp";
 
-var g_streams, g_flairs, g_parallax, g_debug;
+var g_flairs, g_streams, g_refreshstreams, g_refreshrate, g_parallax, g_debug;
 
 function setupConfig() {
     GM_config.init({
@@ -45,6 +45,20 @@ function setupConfig() {
                 "default": true
             },
 
+            "refreshstreams": {
+                "label": "Automatically refresh stream list",
+                "type": "checkbox",
+                "default": false
+            },
+
+            "refreshrate": {
+                "label": "Stream list refresh rate (seconds)",
+                "type": "int",
+                "min": 1,
+                "max": 600,
+                "default": 30
+            },
+
             "parallax": {
                 "label": "Parallax effect in header",
                 "type": "checkbox",
@@ -61,6 +75,8 @@ function setupConfig() {
 
     g_flairs = GM_config.get("flairs");
     g_streams = GM_config.get("streams");
+    g_refreshstreams = GM_config.get("refreshstreams");
+    g_refreshrate = GM_config.get("refreshrate");
     g_parallax = GM_config.get("parallax");
     g_debug = GM_config.get("debug");
 
@@ -235,9 +251,21 @@ function Flairbox() {
 }
 
 function Streambox() {
+    var timer;
+    var refreshing = true;
+
     var makeSidebarBox = function() {
+        var refreshtext;
+        if(g_refreshstreams) {
+            refreshtext = "stop";
+        } else {
+            refreshtext = "refresh";
+        }
+
         var html =
-            "<div id='ofp-streambox'><h2>Live streams</h2>" +
+            "<div id='ofp-streambox'><h2>Live streams <sup><sup>" +
+                "<a id='refreshbtn' href='javascript:void(0)'>" + refreshtext +
+                "</a></sup></sup></h2>" +
             "<div id='ofp-streamone'></div><div id='ofp-streamtwo'></div>" +
             "<div id='ofp-streamthree'></div></div>";
 
@@ -247,10 +275,33 @@ function Streambox() {
             .getElementsByClassName("usertext-body")[0]
             .getElementsByTagName("h2")[1];
 
-        return insertpoint.parentNode.insertBefore(newelement, insertpoint);
+        var inserted = insertpoint.parentNode.insertBefore(newelement, insertpoint);
+
+        if(g_refreshstreams) {
+            document.getElementById("refreshbtn")
+                .addEventListener("click", function(){
+                    if(refreshing) {
+                        refreshing = false;
+                        window.clearInterval(timer);
+                        document.getElementById("refreshbtn").innerHTML = "start";
+                    } else {
+                        refreshing = true;
+                        timer = window.setInterval(grabStreams, g_refreshrate*1000);
+                        document.getElementById("refreshbtn").innerHTML = "stop";
+                    }
+                }, false);
+
+            timer = window.setInterval(grabStreams, g_refreshrate*1000);
+        } else {
+            document.getElementById("refreshbtn")
+                .addEventListener("click", grabStreams, false);
+        }
+
+        return inserted;
     };
 
     var grabStreams = function() {
+        if(g_debug) console.count("Fetching from Twitch API");
         GM_xmlhttpRequest({
             method: "GET",
             url: "https://api.twitch.tv/kraken/streams?game=osu!&limit=3",
