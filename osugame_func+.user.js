@@ -4,7 +4,7 @@
 // @author      /u/N3G4
 // @description Adds osu! related functionality to /r/osugame
 // @include     *reddit.com/r/osugame*
-// @version     1.3.6
+// @version     1.3.7
 // @run-at      document-end
 // @grant       GM_openInTab
 // @grant       GM_addStyle
@@ -25,6 +25,7 @@ var githubURL = "https://github.com/v0x76/osugame_funcp";
 
 var g_streams = GM_getValue("streams", true);
 var g_flairs = GM_getValue("flairs", true);
+var g_parallax = GM_getValue("parallax", true);
 var g_debug = GM_getValue("debug", false);
 
 function setupGMMenu() {
@@ -38,6 +39,11 @@ function setupGMMenu() {
         GM_setValue("flairs", g_flairs);
     };
 
+    var setParallax = function() {
+        g_parallax = !g_parallax; 
+        GM_setValue("parallax", g_parallax);
+    };
+
     var setDebug = function() {
         g_debug = !g_debug; 
         GM_setValue("debug", g_debug);
@@ -45,6 +51,7 @@ function setupGMMenu() {
 
     GM_registerMenuCommand("Toggle flair hover info", setFlairs, "f");
     GM_registerMenuCommand("Toggle streams", setStreams, "s");
+    GM_registerMenuCommand("Toggle header parallax", setParallax, "p");
     GM_registerMenuCommand("Toggle debug mode", setDebug, "d");
     GM_registerMenuCommand("Open github repo", function(){ GM_openInTab(githubURL); }, "g");
     GM_registerMenuCommand("DL latest version of script", 
@@ -85,6 +92,7 @@ function getXYPos(element) {
 }
 
 function Flairbox() {
+    var timer;
     var waiting = false;
 
     var clickify = function(flair) {
@@ -102,8 +110,13 @@ function Flairbox() {
 
     var setHover = function(flair) {
         var box = document.getElementById("ofp-infobox");
-        flair.firstChild.onmouseover = function(){ showInfoBox(box, flair); };
-        flair.firstChild.onmouseout = function(){ hideInfoBox(box, flair); };
+        flair.firstChild.onmouseover = function(){
+            timer = setTimeout(showInfoBox, 200, box, flair);
+        };
+        flair.firstChild.onmouseout = function(){
+            clearTimeout(timer);
+            hideInfoBox(box, flair);
+        };
     };
 
     var showInfoBox = function(box, flair) {
@@ -272,7 +285,21 @@ function Streambox() {
     grabStreams();
 }
 
+var pippy;
+function parallax() {
+    pippy.style["background-position"] = "0 58px, 0 "+
+        (79-window.pageYOffset*.5)+"px";
+}
+
 window.addEventListener("load", function(){
+    if(g_parallax){
+        pippy = document.getElementById("header-img");
+
+        window.addEventListener("scroll", function(){
+            window.requestAnimationFrame(parallax);
+        }, false);
+    }
+
     setupGMMenu();
     makeStylesheet();
 
@@ -281,5 +308,5 @@ window.addEventListener("load", function(){
     }
 
     Flairbox();
-}, false );
+}, false);
 
