@@ -5,6 +5,7 @@
 // @description Adds osu! related functionality to /r/osugame
 // @include     *reddit.com/r/osugame*
 // @version     1.3.8
+// @require     https://openuserjs.org/src/libs/sizzle/GM_config.js
 // @run-at      document-end
 // @grant       GM_openInTab
 // @grant       GM_addStyle
@@ -12,6 +13,7 @@
 // @grant       GM_getValue
 // @grant       GM_setValue
 // @grant       GM_xmlhttpRequest
+// @grant       GM_log
 // ==/UserScript==
 
 // ~ ~~ Features ~~ ~
@@ -23,36 +25,46 @@
 
 var githubURL = "https://github.com/v0x76/osugame_funcp";
 
-var g_streams = GM_getValue("streams", true);
-var g_flairs = GM_getValue("flairs", true);
-var g_parallax = GM_getValue("parallax", true);
-var g_debug = GM_getValue("debug", false);
+var g_streams, g_flairs, g_parallax, g_debug;
 
-function setupGMMenu() {
-    var setStreams = function() {
-        g_streams = !g_streams; 
-        GM_setValue("streams", g_streams);
-    };
+function setupConfig() {
+    GM_config.init({
+        "id": "ofpconf",
+        "title": "osugame_func+ settings",
+        "fields":
+        {
+            "flairs": {
+                "label": "Player info fetching",
+                "type": "checkbox",
+                "default": true
+            },
 
-    var setFlairs = function() {
-        g_flairs = !g_flairs; 
-        GM_setValue("flairs", g_flairs);
-    };
+            "streams": {
+                "label": "Live twitch streams",
+                "type": "checkbox",
+                "default": true
+            },
 
-    var setParallax = function() {
-        g_parallax = !g_parallax; 
-        GM_setValue("parallax", g_parallax);
-    };
+            "parallax": {
+                "label": "Parallax effect in header",
+                "type": "checkbox",
+                "default": true
+            },
 
-    var setDebug = function() {
-        g_debug = !g_debug; 
-        GM_setValue("debug", g_debug);
-    };
+            "debug": {
+                "label": "Debug mode",
+                "type": "checkbox",
+                "default": false
+            }
+        }
+    });
 
-    GM_registerMenuCommand("Toggle flair hover info", setFlairs, "f");
-    GM_registerMenuCommand("Toggle streams", setStreams, "s");
-    GM_registerMenuCommand("Toggle header parallax", setParallax, "p");
-    GM_registerMenuCommand("Toggle debug mode", setDebug, "d");
+    g_flairs = GM_config.get("flairs");
+    g_streams = GM_config.get("streams");
+    g_parallax = GM_config.get("parallax");
+    g_debug = GM_config.get("debug");
+
+    GM_registerMenuCommand("Open settings", function(){ GM_config.open(); }, "s");
     GM_registerMenuCommand("Open github repo", function(){ GM_openInTab(githubURL); }, "g");
     GM_registerMenuCommand("DL latest version of script", 
         function(){ GM_openInTab(githubURL + "/raw/master/osugame_func+.user.js"); }, "v");
@@ -292,6 +304,15 @@ function parallax() {
 }
 
 window.addEventListener("load", function(){
+    setupConfig();
+    makeStylesheet();
+
+    if(g_streams) {
+        Streambox();
+    }
+
+    Flairbox();
+
     if(g_parallax){
         pippy = document.getElementById("header-img");
 
@@ -301,14 +322,5 @@ window.addEventListener("load", function(){
             }
         }, false);
     }
-
-    setupGMMenu();
-    makeStylesheet();
-
-    if(g_streams) {
-        Streambox();
-    }
-
-    Flairbox();
 }, false);
 
