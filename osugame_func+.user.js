@@ -1,10 +1,10 @@
-// ==UserScript==
+﻿// ==UserScript==
 // @name        osugame_func+
 // @namespace   /r/osugame
 // @author      /u/N3G4
 // @description Adds osu! related functionality to /r/osugame
 // @include     *reddit.com/r/osugame*
-// @version     1.3.4
+// @version     1.3.5
 // @run-at      document-end
 // @grant       GM_openInTab
 // @grant       GM_addStyle
@@ -53,12 +53,16 @@ function setupGMMenu() {
 
 function makeStylesheet() {
     GM_addStyle(
-        "#ofp-infobox { position:absolute; padding: 2px 5px; " +
-            "background-color:#A9A9FF; opacity:0.9; color: #FFF; " +
+        "#ofp-infobox { position: absolute; padding: 2px 5px; " +
+            "background-color: #A9A9FF; opacity: 0.9; color: #FFF; " +
             "font-size: 11px; }" +
+        "#ofp-infobox::before { content: ''; position: absolute;" +
+            "bottom: -8px; font-size: 0; opacity: 0.9;" +
+            "border-style: solid; border-width: 4px;" +
+            "border-color: #A9A9FF transparent transparent; }" +
         ".ofp-streaminfo { width: 100%; margin: 4px 0; padding: 2px; " +
             "background: #EEF; color: #888; }" +
-        ".ofp-streaminfo strong { color: #369; font-size:12px; }" +
+        ".ofp-streaminfo strong { color: #369; font-size: 12px; }" +
         ".ofp-streaminfo p { margin: 3px 0 0 !important; }" +
         ".ofp-streaminfo span { color: #333; }"
     );
@@ -181,7 +185,7 @@ function Flairbox() {
     var reposInfoBox = function(box, element) {
         const { x, y } = getXYPos(element);
         box.style.left = x+"px";
-        box.style.top = y+20+"px";
+        box.style.top = y-20+"px";
     };
 
     createInfoBox();
