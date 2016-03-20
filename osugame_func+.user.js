@@ -4,7 +4,7 @@
 // @author      /u/N3G4
 // @description Adds osu! related functionality to /r/osugame
 // @include     *reddit.com/r/osugame*
-// @version     1.4.1
+// @version     1.4.2
 // @require     https://openuserjs.org/src/libs/sizzle/GM_config.js
 // @run-at      document-end
 // @grant       GM_openInTab
@@ -348,10 +348,13 @@ function Streambox() {
     grabStreams();
 }
 
-var pippy;
+var pippy, srheader, navtop;
 function parallax() {
     pippy.style["background-position"] = "0 58px, 0 "+
         (79-window.pageYOffset*0.5)+"px";
+    srheader.style["margin-top"] = -(window.pageYOffset*0.25)+"px";
+    navtop.style.top = (19-window.pageYOffset*0.25)+"px";
+    
 }
 
 window.addEventListener("load", function(){
@@ -366,6 +369,8 @@ window.addEventListener("load", function(){
 
     if(g_parallax){
         pippy = document.getElementById("header-img");
+        srheader = document.getElementById("sr-header-area");
+        navtop = document.getElementById("header-bottom-right");
 
         window.addEventListener("scroll", function(){
             if(window.pageYOffset < 150) {
