@@ -4,7 +4,7 @@
 // @author      /u/N3G4
 // @description Adds osu! related functionality to /r/osugame
 // @include     *reddit.com/r/osugame*
-// @version     1.4.3
+// @version     1.4.4
 // @require     https://openuserjs.org/src/libs/sizzle/GM_config.js
 // @run-at      document-end
 // @grant       GM_openInTab
@@ -335,15 +335,17 @@ function Streambox() {
         for(let i=streaminfo.length-1; i>=0; i--) {
             container = streambox.firstElementChild.children[i+1];
 
+            var displayedtitle;
             if(streaminfo[i].title.length > 40) {
-                streaminfo[i].title = streaminfo[i].title.substr(0, 38) + "...";
+                displayedtitle = streaminfo[i].title.substr(0, 38) + "...";
             }
 
             container.innerHTML =
                 "<a href=" + streaminfo[i].url + ">" +
                 "<div class='ofp-streaminfo'><img src=" +
-                streaminfo[i].image + "/><strong>" +
-                streaminfo[i].title.replace(/<|>/g, "") + "</strong> (" +
+                streaminfo[i].image + "/><strong title='" +
+                streaminfo[i].title + "'>" +
+                displayedtitle.replace(/<|>/g, "") + "</strong> (" +
                 streaminfo[i].language + ")<p><span>" +
                 streaminfo[i].username + "</span> / <span>" +
                 streaminfo[i].viewercount + "</span> viewers" + 
