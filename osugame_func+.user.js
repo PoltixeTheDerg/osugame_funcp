@@ -4,7 +4,7 @@
 // @author      /u/N3G4
 // @description Adds osu! related functionality to /r/osugame
 // @include     *reddit.com/r/osugame*
-// @version     1.4.4
+// @version     1.4.5
 // @require     https://openuserjs.org/src/libs/sizzle/GM_config.js
 // @run-at      document-end
 // @grant       GM_openInTab
@@ -338,6 +338,8 @@ function Streambox() {
             var displayedtitle;
             if(streaminfo[i].title.length > 40) {
                 displayedtitle = streaminfo[i].title.substr(0, 38) + "...";
+            } else {
+                displayedtitle = streaminfo[i].title;
             }
 
             container.innerHTML =
