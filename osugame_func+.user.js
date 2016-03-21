@@ -4,7 +4,7 @@
 // @author      /u/N3G4
 // @description Adds osu! related functionality to /r/osugame
 // @include     *reddit.com/r/osugame*
-// @version     1.4.2
+// @version     1.4.3
 // @require     https://openuserjs.org/src/libs/sizzle/GM_config.js
 // @run-at      document-end
 // @grant       GM_openInTab
@@ -95,8 +95,10 @@ function makeStylesheet() {
             "bottom: -8px; font-size: 0; opacity: 0.9;" +
             "border-style: solid; border-width: 4px;" +
             "border-color: #A9A9FF transparent transparent; }" +
-        ".ofp-streaminfo { width: 100%; margin: 4px 0; padding: 2px; " +
-            "background: #EEF; color: #888; }" +
+        ".ofp-streaminfo { width: 100%; min-height: 45px; " +
+            "margin: 4px 0; padding: 2px; background: #EEF; " +
+            "color: #888; }" +
+        ".ofp-streaminfo img { float: left; margin-right: 4px; }" +
         ".ofp-streaminfo strong { color: #369; font-size: 12px; }" +
         ".ofp-streaminfo p { margin: 3px 0 0 !important; }" +
         ".ofp-streaminfo span { color: #333; }"
@@ -333,10 +335,15 @@ function Streambox() {
         for(let i=streaminfo.length-1; i>=0; i--) {
             container = streambox.firstElementChild.children[i+1];
 
+            if(streaminfo[i].title.length > 40) {
+                streaminfo[i].title = streaminfo[i].title.substr(0, 38) + "...";
+            }
+
             container.innerHTML =
                 "<a href=" + streaminfo[i].url + ">" +
-                "<div class='ofp-streaminfo'><strong>" +
-                streaminfo[i].title + "</strong> (" +
+                "<div class='ofp-streaminfo'><img src=" +
+                streaminfo[i].image + "/><strong>" +
+                streaminfo[i].title.replace(/<|>/g, "") + "</strong> (" +
                 streaminfo[i].language + ")<p><span>" +
                 streaminfo[i].username + "</span> / <span>" +
                 streaminfo[i].viewercount + "</span> viewers" + 
