@@ -7,7 +7,7 @@ Userscript adding osu! related functionality to /r/osugame
 * Adds live twitch streams to the sidebar
 
 ## Screenshots
-![flairs](http://i.imgur.com/vqFPUPK.png) ![streams](http://i.imgur.com/vKwBkZl.png)
+![flairs](http://i.imgur.com/vqFPUPK.png) ![streams](http://i.imgur.com/VWOJuwr.png)
 
 ## Installation
 1. You will need a userscript manager add-on for your browser such as Greasemonkey/Scriptish for Firefox, or Tampermonkey for Chrome/Chromium.
