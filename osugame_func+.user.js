@@ -4,7 +4,7 @@
 // @author      /u/N3G4
 // @description Adds osu! related functionality to /r/osugame
 // @include     *reddit.com/r/osugame*
-// @version     1.4.6
+// @version     1.4.7
 // @require     https://openuserjs.org/src/libs/sizzle/GM_config.js
 // @run-at      document-end
 // @grant       GM_openInTab
@@ -173,15 +173,16 @@ function Flairbox() {
         var playername = resdom.getElementsByClassName("profile-username")[0]
             .innerHTML;
 
+        var idregex = /^[0-9]+$/;
         var userid = response.finalUrl.split("/").pop();
         // need userId to grab rank data
-        if(userid.search("[a-z]") !== -1) {
+        if(userid.search(idregex) === -1) {
             // grab from javascript variable
             userid = resdom.children[1].getElementsByTagName("script")[0]
                 .innerHTML.split(";\n")[0].split("= ")[1];
 
             // second route
-            if(userid.search("[a-z]") !== -1) {
+            if(userid.search(idregex) === -1) {
                 // grab from avatar filename
                 var avatar = resdom.getElementsByClassName("avatar-holder")[0];
                 if(avatar) {
@@ -189,7 +190,7 @@ function Flairbox() {
                 }
 
                 // third route
-                if(!avatar || userid.search("[a-z]") !== -1) {
+                if(!avatar || userid.search(idregex) === -1) {
                     // grab from friend button
                     userid = resdom.getElementsByClassName("centrep")[1]
                         .firstElementChild.getAttribute("href").split(/\/|\?/)[2];
