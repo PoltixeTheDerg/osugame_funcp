@@ -269,7 +269,8 @@ function Streambox() {
                 "<a id='refreshbtn' href='javascript:void(0)'>" + refreshtext +
                 "</a></sup></sup></h2>" +
             "<div id='ofp-streamone'></div><div id='ofp-streamtwo'></div>" +
-            "<div id='ofp-streamthree'></div></div>";
+            "<div id='ofp-streamthree'></div><p>" +
+            "<a href='https://www.twitch.tv/directory/game/osu!'>More</a></p></div>";
 
         var newelement = document.createElement("div"); 
         newelement.innerHTML = html;
