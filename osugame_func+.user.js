@@ -365,9 +365,11 @@ var pippy, srheader, navtop;
 function parallax() {
     pippy.style["background-position"] = "0 58px, 0 "+
         (79-window.pageYOffset*0.5)+"px";
-    srheader.style["margin-top"] = -(window.pageYOffset*0.25)+"px";
-    navtop.style.top = (19-window.pageYOffset*0.25)+"px";
-    
+
+    if(window.pageYOffset < 50) {
+        srheader.style["margin-top"] = -(window.pageYOffset*0.25)+"px";
+        navtop.style.top = (19-window.pageYOffset*0.25)+"px";
+    }
 }
 
 window.addEventListener("load", function(){
