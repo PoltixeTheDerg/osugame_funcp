@@ -4,7 +4,7 @@
 // @author      /u/N3G4
 // @description Adds osu! related functionality to /r/osugame
 // @include     *reddit.com/r/osugame*
-// @version     1.4.7
+// @version     1.4.8
 // @require     https://openuserjs.org/src/libs/sizzle/GM_config.js
 // @run-at      document-end
 // @grant       GM_openInTab
@@ -70,7 +70,9 @@ function setupConfig() {
                 "type": "checkbox",
                 "default": false
             }
-        }
+        },
+        "css": "#ofpconf { background-color: #F6F6FE !important; }" +
+            "#ofpconf .config_header { color: #369 !important; }"
     });
 
     g_flairs = GM_config.get("flairs");
@@ -88,12 +90,14 @@ function setupConfig() {
 
 function makeStylesheet() {
     GM_addStyle(
+        "#ofpconf { border-radius: 2px !important; border-color: #DDD !important; " +
+            "box-shadow: 0 3px 12px rgba(85, 85, 85, 0.1); }" +
         "#ofp-infobox { position: absolute; padding: 2px 5px; " +
             "background-color: #A9A9FF; opacity: 0.9; color: #FFF; " +
             "font-size: 11px; }" +
-        "#ofp-infobox::before { content: ''; position: absolute;" +
-            "bottom: -8px; font-size: 0; opacity: 0.9;" +
-            "border-style: solid; border-width: 4px;" +
+        "#ofp-infobox::before { content: ''; position: absolute; " +
+            "bottom: -8px; font-size: 0; opacity: 0.9; " +
+            "border-style: solid; border-width: 4px; " +
             "border-color: #A9A9FF transparent transparent; }" +
         ".ofp-streaminfo { width: 100%; min-height: 45px; " +
             "margin: 4px 0; padding: 2px; background: #EEF; " +
