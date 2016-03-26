@@ -4,7 +4,7 @@
 // @author      /u/N3G4
 // @description Adds osu! related functionality to /r/osugame
 // @include     *reddit.com/r/osugame*
-// @version     1.5.4
+// @version     1.5.5
 // @require     https://openuserjs.org/src/libs/sizzle/GM_config.js
 // @run-at      document-end
 // @grant       GM_openInTab
@@ -125,7 +125,13 @@ function makeStylesheet() {
         ".ofp-streaminfo span { color: #333; }" +
         ".ofp-preview { cursor: pointer; font-size: 0.7em; }" +
         "#ofp-iframe { border: solid 1px #DDD; border-radius: 2px; " +
-            "box-shadow: 0 3px 12px rgba(85, 85, 85, 0.1); }"
+            "box-shadow: 0 3px 12px rgba(85, 85, 85, 0.1); }" +
+        "#ofp-iframe-btn { float: right; padding: 1px 4px 1px 6px; " +
+            "background-color: #F6F6FE; border-style: solid; " +
+            "border-width: 1px 1px 1px 0; border-color: #DDD; " +
+            "border-radius: 0 2px 2px 0; font-size: 13px; font-weight: 600; " +
+            "color: #222; box-shadow: 0 3px 12px rgba(85, 85, 85, 0.1); " +
+            "cursor: pointer; }"
     );
 }
 
@@ -386,22 +392,36 @@ function Streambox() {
 }
 
 function Osulinkbox() {
-    var iframe;
+    var iframecontainer, iframe;
 
     if(g_songs) {
         var audio = new Audio();
         audio.volume = 0.45;
-        var currentId = -1;
+        var currentSong = -1;
     }
 
     var createIFrame = function() {
+        var div = document.createElement("div");
+        div.id = "ofp-iframe-container";
+        div.style.cssText = "display: none; position: absolute;";
+
+        var buttonel = document.createElement("p");
+        buttonel.id = "ofp-iframe-btn";
+        buttonel.innerHTML = "x";
+
+        var button = div.appendChild(buttonel);
+        button.addEventListener("click", function(){
+            iframe.src = "";
+            iframecontainer.style.display = "none";
+        });
+
         var iframe = document.createElement("iframe");
         iframe.id = "ofp-iframe";
         iframe.width = 400;
         iframe.height = 300;
-        iframe.style.cssText = "display: none; position: absolute;";
 
-        var inserted = document.getElementsByTagName("body")[0].appendChild(iframe);
+        div.appendChild(iframe);
+        var inserted = document.getElementsByTagName("body")[0].appendChild(div);
         return inserted;
     };
 
@@ -410,17 +430,16 @@ function Osulinkbox() {
         element.innerHTML = " (preview)";
         element.className = "ofp-preview";
 
-        var beatmapid = link.href.match(/[0-9]+$/)[0];
-
         var inserted = link.parentNode.insertBefore(element, link.nextSibling);
 
+        var beatmapid = link.href.match(/[0-9]+$/)[0];
         if(type === 0) {
             inserted.addEventListener("click", function(){ 
-                if(currentId == beatmapid) {
+                if(currentSong == beatmapid) {
                     if(audio.paused) { audio.play(); }
                     else { audio.pause(); audio.currentTime = 0; }
                 } else {
-                    currentId = beatmapid;
+                    currentSong = beatmapid;
 
                     audio.src = "https://b.ppy.sh/preview/" + beatmapid + ".mp3"; 
                     audio.play();
@@ -428,32 +447,21 @@ function Osulinkbox() {
             }, false);
         } else {
             inserted.addEventListener("click", function(){ 
-                if(currentId == beatmapid) {
-                    if(iframe.style.display === "none") {
-                        iframe.src = "https://bloodcat.com/osu/preview.html#" + beatmapid;
-                        iframe.style.display = "block";
-                    } else {
-                        iframe.src = "";
-                        iframe.style.display = "none";
-                    }
-                } else {
-                    currentId = beatmapid;
-
-                    iframe.src = "https://bloodcat.com/osu/preview.html#" + beatmapid;
-                    reposIFrame(inserted);
-                    iframe.style.display = "block";
-                }
+                iframe.src = "https://bloodcat.com/osu/preview.html#" + beatmapid;
+                reposIFrame(inserted);
+                iframecontainer.style.display = "block";
             });
         }
     };
 
     var reposIFrame = function(element) {
         const { x, y } = getXYPos(element);
-        iframe.style.left = x+"px";
-        iframe.style.top = y+20+"px";
+        iframecontainer.style.left = x+"px";
+        iframecontainer.style.top = y+20+"px";
     };
 
-    iframe = createIFrame();
+    iframecontainer = createIFrame();
+    iframe = iframecontainer.getElementsByTagName("iframe")[0];
 
     var entries = document.getElementsByClassName("usertext-body");
     for(let i=entries.length-1; i>=0; i--) {
