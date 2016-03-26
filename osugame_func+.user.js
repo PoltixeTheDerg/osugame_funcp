@@ -4,7 +4,7 @@
 // @author      /u/N3G4
 // @description Adds osu! related functionality to /r/osugame
 // @include     *reddit.com/r/osugame*
-// @version     1.5.0
+// @version     1.5.1
 // @require     https://openuserjs.org/src/libs/sizzle/GM_config.js
 // @run-at      document-end
 // @grant       GM_openInTab
@@ -388,6 +388,7 @@ function Osulinkbox() {
 
         var inserted = link.parentNode.insertBefore(element, link.nextSibling);
         inserted.addEventListener("click", function(){ 
+            console.log(beatmapid);
             if(currentId == beatmapid) {
                 if(audio.paused) { audio.play(); return true; }
                 else { audio.pause(); audio.currentTime = 0; return false; }
@@ -404,7 +405,7 @@ function Osulinkbox() {
         var links = entries[i].getElementsByTagName("a");
 
         for(let j=links.length-1; j>=0; j--) {
-            if( links[j].href.search("^https?://osu\.ppy\.sh/[sb]/") !== -1 ) {
+            if( links[j].href.search("^https?://osu\.ppy\.sh/s/") !== -1 ) {
                 addPreview(links[j]);
             }
         }
