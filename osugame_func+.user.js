@@ -66,6 +66,12 @@ function setupConfig() {
                 "default": true
             },
 
+            "osudirect": {
+                "label": "Convert beatmap download links to osu!direct downloads",
+                "type": "checkbox",
+                "default": false
+            },
+
             "parallax": {
                 "label": "Parallax effect in header",
                 "type": "checkbox",
@@ -87,6 +93,7 @@ function setupConfig() {
     g_refreshstreams = GM_config.get("refreshstreams");
     g_refreshrate = GM_config.get("refreshrate");
     g_songs = GM_config.get("songs");
+    g_osudirect = GM_config.get("osudirect");
     g_parallax = GM_config.get("parallax");
     g_debug = GM_config.get("debug");
 
@@ -412,6 +419,19 @@ function Osulinkbox() {
     }
 }
 
+function Osudirectbox() {
+    var entries = document.getElementsByClassName("usertext-body");
+    for(let i=entries.length-1; i>=0; i--) {
+        var links = entries[i].getElementsByTagName("a");
+
+        for(let j=links.length-1; j>=0; j--) {
+            if( links[j].href.search("^https?://osu\.ppy\.sh/d/") !== -1 ) {
+                links[j].href = links[j].href.replace(/^https?:\/\/osu\.ppy\.sh\/d\//, "osu://dl/");
+            }
+        }
+    }
+}
+
 var pippy, srheader, navtop;
 function parallax() {
     pippy.style["background-position"] = "0 58px, 0 "+
@@ -433,6 +453,10 @@ window.addEventListener("load", function(){
 
     if(g_songs) {
         Osulinkbox();
+    }
+
+    if(g_osudirect) {
+        Osudirectbox();
     }
 
     Flairbox();
