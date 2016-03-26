@@ -4,7 +4,7 @@
 // @author      /u/N3G4
 // @description Adds osu! related functionality to /r/osugame
 // @include     *reddit.com/r/osugame*
-// @version     1.5.2
+// @version     1.5.3
 // @require     https://openuserjs.org/src/libs/sizzle/GM_config.js
 // @run-at      document-end
 // @grant       GM_openInTab
@@ -382,9 +382,11 @@ function Streambox() {
 }
 
 function Osulinkbox() {
-    var audio = new Audio();
-    audio.volume = 0.45;
-    var currentId = -1;
+    if(g_songs) {
+        var audio = new Audio();
+        audio.volume = 0.45;
+        var currentId = -1;
+    }
 
     var addPreview = function(link) {
         var element = document.createElement("a");
@@ -415,17 +417,7 @@ function Osulinkbox() {
             if( links[j].href.search("^https?://osu\.ppy\.sh/s/") !== -1 ) {
                 addPreview(links[j]);
             }
-        }
-    }
-}
-
-function Osudirectbox() {
-    var entries = document.getElementsByClassName("usertext-body");
-    for(let i=entries.length-1; i>=0; i--) {
-        var links = entries[i].getElementsByTagName("a");
-
-        for(let j=links.length-1; j>=0; j--) {
-            if( links[j].href.search("^https?://osu\.ppy\.sh/d/") !== -1 ) {
+            else if( g_osudirect && links[j].href.search("^https?://osu\.ppy\.sh/d/") !== -1 ) {
                 links[j].href = links[j].href.replace(/^https?:\/\/osu\.ppy\.sh\/d\//, "osu://dl/");
             }
         }
@@ -451,12 +443,8 @@ window.addEventListener("load", function(){
         Streambox();
     }
 
-    if(g_songs) {
+    if(g_songs || g_osudirect) {
         Osulinkbox();
-    }
-
-    if(g_osudirect) {
-        Osudirectbox();
     }
 
     Flairbox();
