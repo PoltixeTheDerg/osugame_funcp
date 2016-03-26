@@ -10,7 +10,7 @@ Userscript adding osu! related functionality to /r/osugame
 * Converts beatmap download links to osu!direct download links
 
 ## Screenshots
-![flairs](http://i.imgur.com/vqFPUPK.png) ![streams](http://i.imgur.com/VWOJuwr.png)
+![flairs](http://i.imgur.com/vqFPUPK.png) ![streams](http://i.imgur.com/VWOJuwr.png) ![previews](https://i.imgur.com/v5JOXy0.png)
 
 ## Installation
 1. You will need a userscript manager add-on for your browser such as Greasemonkey/Scriptish for Firefox, or Tampermonkey for Chrome/Chromium.
