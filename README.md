@@ -5,6 +5,7 @@ Userscript adding osu! related functionality to /r/osugame
 * Turns URLs in user flairs to clickable links
 * Displays player name and pp/rank on flair hover
 * Adds live twitch streams to the sidebar
+* Adds song preview buttons to beatmap links
 
 ## Screenshots
 ![flairs](http://i.imgur.com/vqFPUPK.png) ![streams](http://i.imgur.com/VWOJuwr.png)
