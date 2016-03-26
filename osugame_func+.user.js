@@ -4,7 +4,7 @@
 // @author      /u/N3G4
 // @description Adds osu! related functionality to /r/osugame
 // @include     *reddit.com/r/osugame*
-// @version     1.5.1
+// @version     1.5.2
 // @require     https://openuserjs.org/src/libs/sizzle/GM_config.js
 // @run-at      document-end
 // @grant       GM_openInTab
@@ -26,7 +26,7 @@
 
 var githubURL = "https://github.com/v0x76/osugame_funcp";
 
-var g_flairs, g_streams, g_refreshstreams, g_refreshrate, g_songs, g_parallax, g_debug;
+var g_flairs, g_streams, g_refreshstreams, g_refreshrate, g_songs, g_osudirect, g_parallax, g_debug;
 
 function setupConfig() {
     GM_config.init({
