@@ -4,7 +4,7 @@
 // @author      /u/N3G4
 // @description Adds osu! related functionality to /r/osugame
 // @include     *reddit.com/r/osugame*
-// @version     1.4.8
+// @version     1.5.0
 // @require     https://openuserjs.org/src/libs/sizzle/GM_config.js
 // @run-at      document-end
 // @grant       GM_openInTab
@@ -20,12 +20,13 @@
 // * Turns URLs in user flairs to clickable links
 // * Displays player name and pp/rank on flair hover
 // * Adds live twitch streams to the sidebar
+// * Adds song preview buttons to beatmap links
 //
 // ~      ~~~~      ~
 
 var githubURL = "https://github.com/v0x76/osugame_funcp";
 
-var g_flairs, g_streams, g_refreshstreams, g_refreshrate, g_parallax, g_debug;
+var g_flairs, g_streams, g_refreshstreams, g_refreshrate, g_songs, g_parallax, g_debug;
 
 function setupConfig() {
     GM_config.init({
@@ -59,6 +60,12 @@ function setupConfig() {
                 "default": 30
             },
 
+            "songs": {
+                "label": "Add song preview button to beatmap links",
+                "type": "checkbox",
+                "default": true
+            },
+
             "parallax": {
                 "label": "Parallax effect in header",
                 "type": "checkbox",
@@ -79,6 +86,7 @@ function setupConfig() {
     g_streams = GM_config.get("streams");
     g_refreshstreams = GM_config.get("refreshstreams");
     g_refreshrate = GM_config.get("refreshrate");
+    g_songs = GM_config.get("songs");
     g_parallax = GM_config.get("parallax");
     g_debug = GM_config.get("debug");
 
@@ -105,7 +113,8 @@ function makeStylesheet() {
         ".ofp-streaminfo img { float: left; margin-right: 4px; }" +
         ".ofp-streaminfo strong { color: #369; font-size: 12px; }" +
         ".ofp-streaminfo p { margin: 3px 0 0 !important; }" +
-        ".ofp-streaminfo span { color: #333; }"
+        ".ofp-streaminfo span { color: #333; }" +
+        ".ofp-preview { cursor: pointer; font-size: 0.7em; }"
     );
 }
 
@@ -365,6 +374,43 @@ function Streambox() {
     grabStreams();
 }
 
+function Osulinkbox() {
+    var audio = new Audio();
+    audio.volume = 0.45;
+    var currentId = -1;
+
+    var addPreview = function(link) {
+        var element = document.createElement("a");
+        element.innerHTML = " (preview)";
+        element.className = "ofp-preview";
+
+        var beatmapid = link.href.match(/[0-9]+$/)[0];
+
+        var inserted = link.parentNode.insertBefore(element, link.nextSibling);
+        inserted.addEventListener("click", function(){ 
+            if(currentId == beatmapid) {
+                if(audio.paused) { audio.play(); return true; }
+                else { audio.pause(); audio.currentTime = 0; return false; }
+            }
+            currentId = beatmapid;
+            audio.src = "https://b.ppy.sh/preview/" + beatmapid + ".mp3"; 
+            audio.play();
+            return true;
+        }, false);
+    };
+
+    var entries = document.getElementsByClassName("usertext-body");
+    for(let i=entries.length-1; i>=0; i--) {
+        var links = entries[i].getElementsByTagName("a");
+
+        for(let j=links.length-1; j>=0; j--) {
+            if( links[j].href.search("^https?://osu\.ppy\.sh/[sb]/") !== -1 ) {
+                addPreview(links[j]);
+            }
+        }
+    }
+}
+
 var pippy, srheader, navtop;
 function parallax() {
     pippy.style["background-position"] = "0 58px, 0 "+
@@ -382,6 +428,10 @@ window.addEventListener("load", function(){
 
     if(g_streams) {
         Streambox();
+    }
+
+    if(g_songs) {
+        Osulinkbox();
     }
 
     Flairbox();
