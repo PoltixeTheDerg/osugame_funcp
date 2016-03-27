@@ -7,7 +7,7 @@ Userscript adding osu! related functionality to /r/osugame
 * Adds live twitch streams to the sidebar
 * Adds song preview buttons to beatmap /s/ links
 * Adds Bloodcat preview buttons to beatmap /b/ links
-* Converts beatmap download links to other mirrors (osu!direct and Bloodcat)
+* Converts beatmap download links to chosen mirror (osu!direct or Bloodcat)
 
 ## Screenshots
 ![flairs](http://i.imgur.com/vqFPUPK.png) ![streams](http://i.imgur.com/VWOJuwr.png) ![previews](https://i.imgur.com/v5JOXy0.png)
