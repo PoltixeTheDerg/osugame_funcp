@@ -27,8 +27,12 @@
 // ~      ~~~~      ~
 
 var githubURL = "https://github.com/v0x76/osugame_funcp";
+var mirrors = {
+    "osu!direct": "osu://dl/",
+    "Bloodcat": "http://bloodcat.com/osu/s/"
+};
 
-var g_flairs, g_streams, g_refreshstreams, g_refreshrate, g_songs, g_osudirect, g_parallax, g_debug;
+var g_flairs, g_streams, g_refreshstreams, g_refreshrate, g_songs, g_downloadmirror, g_parallax, g_debug;
 
 function setupConfig() {
     GM_config.init({
@@ -68,10 +72,11 @@ function setupConfig() {
                 "default": true
             },
 
-            "osudirect": {
-                "label": "Convert beatmap download links to osu!direct downloads",
-                "type": "checkbox",
-                "default": false
+            "downloadmirror": {
+                "label": "Convert beatmap download links to another mirror",
+                "type": "select",
+                "options": ["Default"].concat(Object.keys(mirrors)),
+                "default": "Default"
             },
 
             "parallax": {
@@ -95,7 +100,7 @@ function setupConfig() {
     g_refreshstreams = GM_config.get("refreshstreams");
     g_refreshrate = GM_config.get("refreshrate");
     g_songs = GM_config.get("songs");
-    g_osudirect = GM_config.get("osudirect");
+    g_downloadmirror = GM_config.get("downloadmirror");
     g_parallax = GM_config.get("parallax");
     g_debug = GM_config.get("debug");
 
@@ -480,9 +485,9 @@ function Osulinkbox() {
                     addPreview(links[j], 1);
                 }
             }
-            else if( g_osudirect && 
+            if( g_downloadmirror !== "Default" && 
                 url.search("^https?://osu\.ppy\.sh/d/") !== -1 ) {
-                links[j].href = url.replace(/^https?:\/\/osu\.ppy\.sh\/d\//, "osu://dl/");
+                links[j].href = url.replace(/^https?:\/\/osu\.ppy\.sh\/d\//, mirrors[g_downloadmirror]);
             }
         }
     }
@@ -507,7 +512,7 @@ window.addEventListener("load", function(){
         Streambox();
     }
 
-    if(g_songs || g_osudirect) {
+    if(g_songs || g_downloadmirror !== "Default") {
         Osulinkbox();
     }
 
