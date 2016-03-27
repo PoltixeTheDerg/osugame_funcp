@@ -4,7 +4,7 @@
 // @author      /u/N3G4
 // @description Adds osu! related functionality to /r/osugame
 // @include     *reddit.com/r/osugame*
-// @version     1.5.6
+// @version     1.5.7
 // @require     https://openuserjs.org/src/libs/sizzle/GM_config.js
 // @run-at      document-end
 // @grant       GM_openInTab
@@ -22,7 +22,7 @@
 // * Adds live twitch streams to the sidebar
 // * Adds song preview buttons to beatmap /s/ links
 // * Adds Bloodcat preview buttons to beatmap /b/ links
-// * Converts beatmap download links to osu!direct links
+// * Converts beatmap download links to chosen mirror
 //
 // ~      ~~~~      ~
 
@@ -73,7 +73,7 @@ function setupConfig() {
             },
 
             "downloadmirror": {
-                "label": "Convert beatmap download links to another mirror",
+                "label": "Beatmap download links",
                 "type": "select",
                 "options": ["Default"].concat(Object.keys(mirrors)),
                 "default": "Default"
