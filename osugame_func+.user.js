@@ -4,7 +4,7 @@
 // @author      /u/N3G4
 // @description Adds osu! related functionality to /r/osugame
 // @include     *reddit.com/r/osugame*
-// @version     1.5.7
+// @version     1.5.8
 // @require     https://openuserjs.org/src/libs/sizzle/GM_config.js
 // @run-at      document-end
 // @grant       GM_openInTab
@@ -31,6 +31,7 @@ var mirrors = {
     "osu!direct": "osu://dl/",
     "Bloodcat": "http://bloodcat.com/osu/s/"
 };
+var twitchkey = "nerivr8xh8fff696oyomj0ghlxqnvtb";
 
 var g_flairs, g_streams, g_refreshstreams, g_refreshrate, g_songs, g_downloadmirror, g_parallax, g_debug;
 
@@ -63,7 +64,7 @@ function setupConfig() {
                 "type": "int",
                 "min": 1,
                 "max": 600,
-                "default": 30
+                "default": 20
             },
 
             "songs": {
@@ -343,7 +344,7 @@ function Streambox() {
         if(g_debug) console.count("Fetching from Twitch API");
         GM_xmlhttpRequest({
             method: "GET",
-            url: "https://api.twitch.tv/kraken/streams?game=osu!&limit=3",
+            url: "https://api.twitch.tv/kraken/streams?api_version=3&game=osu!&limit=3&client_id=" + twitchkey,
             onload: function(response){ extractInfo(response); },
             onerror: function(){ console.error("Error on HTTP GET request"); }
         });
@@ -437,7 +438,7 @@ function Osulinkbox() {
 
         var inserted = link.parentNode.insertBefore(element, link.nextSibling);
 
-        var beatmapid = link.href.match(/[0-9]+$/)[0];
+        var beatmapid = link.href.match(/[0-9]+/)[0];
         if(type === 0) {
             inserted.addEventListener("click", function(){ 
                 if(currentSong == beatmapid) {
