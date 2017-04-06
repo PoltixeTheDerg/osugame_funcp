@@ -4,7 +4,7 @@
 // @author      /u/N3G4
 // @description Adds osu! related functionality to /r/osugame
 // @include     *reddit.com/r/osugame*
-// @version     1.5.8
+// @version     1.5.9
 // @require     https://openuserjs.org/src/libs/sizzle/GM_config.js
 // @run-at      document-end
 // @grant       GM_openInTab
@@ -34,6 +34,8 @@ var mirrors = {
 var twitchkey = "nerivr8xh8fff696oyomj0ghlxqnvtb";
 
 var g_flairs, g_streams, g_refreshstreams, g_refreshrate, g_songs, g_downloadmirror, g_parallax, g_debug;
+
+var loadingimg = "data:image/gif;base64,R0lGODlhCQAJAIAAAP///////yH/C05FVFNDQVBFMi4wAwEAAAAh+QQJCgABACwAAAAACQAJAAACCYyPBpvtD6OMBQAh+QQJCgABACwAAAAACQAJAAACCoyPCKl866KctAAAIfkECQoAAQAsAAAAAAkACQAAAgqMj6mrwL4gm7MAACH5BAkKAAEALAAAAAAJAAkAAAIJjI+py73wogsFACH5BAkKAAEALAAAAAAJAAkAAAIJjI+py+0P4gsFACH5BAkKAAEALAAAAAAJAAkAAAIKjI+pyx3QIJPOFAAh+QQJCgABACwAAAAACQAJAAACCoyPqQsbzZycqwAAIfkECQoAAQAsAAAAAAkACQAAAgqMjwapHOuinJQVADs=";
 
 function setupConfig() {
     GM_config.init({
@@ -188,13 +190,19 @@ function Flairbox() {
     var showInfoBox = function(box, flair) {
         waiting = true;
 
+        reposInfoBox(box, flair); 
+
+        var loadel = document.createElement("img");
+        loadel.src = loadingimg;
+        box.innerHTML = loadel.outerHTML;
+        box.style.display = "block"; // display info box
+
         GM_xmlhttpRequest({
             method: "GET",
             url: flair.firstChild.innerHTML,
             onload: function(response){ onUserpageLoad(response, box, flair); },
             onerror: function(){ console.error("Error on HTTP GET request."); }
         });
-        reposInfoBox(box, flair); 
     };
 
     var hideInfoBox = function(box) {
@@ -206,8 +214,13 @@ function Flairbox() {
         var resdom = document.createElement("html");
         resdom.innerHTML = response.responseText;
 
-        var playername = resdom.getElementsByClassName("profile-username")[0]
-            .innerHTML;
+        var playernameel = resdom.getElementsByClassName("profile-username");
+        if(playernameel.length === 0) {
+            box.innerHTML = "Player not found";
+            return;
+        } else {
+            var playername = playernameel[0].innerHTML;
+        }
 
         var idregex = /^[0-9]+$/;
         var userid = response.finalUrl.split("/").pop();
