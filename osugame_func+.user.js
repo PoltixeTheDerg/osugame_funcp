@@ -357,7 +357,7 @@ function Streambox() {
         if(g_debug) console.count("Fetching from Twitch API");
         GM_xmlhttpRequest({
             method: "GET",
-            url: "https://api.twitch.tv/kraken/streams?api_version=3&game=osu!&limit=3&client_id=" + twitchkey,
+            url: "https://api.twitch.tv/kraken/streams?api_version=5&game=osu!&limit=3&client_id=" + twitchkey,
             onload: function(response){ extractInfo(response); },
             onerror: function(){ console.error("Error on HTTP GET request"); }
         });
